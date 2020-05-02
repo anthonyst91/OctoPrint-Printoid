@@ -27,18 +27,17 @@ class Alerts:
 			"tokens": [fcm_token]
 		}
 
-		headers = {
-			"Content-type": "application/json"
-		}
-
 		try:
-			#if image:
-			#	files = {"image": ("image.jpg", image, "image/jpeg"),
-			#			 "json": (None, json.dumps(data), "application/json")}
-			#	r = requests.post(url, headers=headers, files=files)
-			#else:
-			#	r = requests.post(url, headers=headers, json=data)
-			r = requests.post(url, headers=headers, json=data)
+			if image:
+				self._logger.info("//// Alert contains an image, attach it to the request")
+				files = { 
+					'image': ('image.jpg', image, 'image/jpeg'),
+					'json': ('payload', json.dumps(data), 'text/plain')
+				}
+				r = requests.post(url, files=files)
+			else:
+				headers = { "Content-type": "application/json" }
+				r = requests.post(url, headers=headers, json=data)
 
 			if r.status_code >= 400:
 				self._logger.info("Notification Response: %s" % str(r.content))
