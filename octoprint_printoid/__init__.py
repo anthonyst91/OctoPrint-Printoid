@@ -18,6 +18,7 @@ from .mmu import MMUAssistance
 from .paused_for_user import PausedForUser
 from .palette2 import Palette2Notifications
 from .layer_notifications import LayerNotifications
+from .pisupport_notifications import piSupportNotifications
 
 
 # Plugin that stores FCM tokens reported from Android devices to know which Android devices to alert
@@ -43,6 +44,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 		self._paused_for_user = PausedForUser(self._logger)
 		self._palette2 = Palette2Notifications(self._logger)
 		self._layerNotifications = LayerNotifications(self._logger)
+		self._piSupportNotifications = piSupportNotifications(self._logger)
 
 	# StartupPlugin mixin
 
@@ -141,10 +143,13 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 	def on_event(self, event, payload):
 		if event == Events.PRINTER_STATE_CHANGED:
 			self._job_notifications.send__printer_state_changed(self._settings, self._printer, payload)
-			
+
 		elif event == "DisplayLayerProgress_layerChanged":
 			# Event sent from DisplayLayerProgress plugin when there was a detected layer changed
 			self._layerNotifications.layer_changed(self._settings, payload["currentLayer"])
+
+		elif event == "plugin_pi_support_throttle_state":
+			self._piSupportNotifications.handle_piSupportData(self._settings,payload)
 
 	# SimpleApiPlugin mixin
 
@@ -194,11 +199,11 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 			self._logger.debug("Tokens saved")
 
 	def get_api_commands(self):
-		return dict(updateToken=["oldToken", "newToken", "deviceName", "printerID"], 
+		return dict(updateToken=["oldToken", "newToken", "deviceName", "printerID"],
 					test=[],
-					snooze=["eventCode", "minutes"], 
-					addLayer=["layer"], 
-					removeLayer=["layer"], 
+					snooze=["eventCode", "minutes"],
+					addLayer=["layer"],
+					removeLayer=["layer"],
 					getLayers=[],
 					clearLayers=[],
 					progressMode=["mode"],
@@ -217,7 +222,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 
 			self.update_token("{oldToken}".format(**data), "{newToken}".format(**data), "{deviceName}".format(**data),
 							  "{printerID}".format(**data), printer_name)
-							  
+
 		elif command == 'test':
 			code = self._test_notifications.send__test(self._settings)
 			return flask.jsonify(dict(code=code))
@@ -228,22 +233,22 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 				eventManager().fire(Events.SETTINGS_UPDATED)
 			else:
 				return flask.make_response("changing progress mode failed: unknown mode", 400)
-			
+
 		elif command == 'snooze':
 			if data["eventCode"] == 'mmu-event':
 				self._mmu_assitance.snooze(data["minutes"])
 			else:
 				return flask.make_response("Snooze command for unknown event", 400)
-				
+
 		elif command == 'addLayer':
 			self._layerNotifications.add_layer(data["layer"])
-			
+
 		elif command == 'removeLayer':
 			self._layerNotifications.remove_layer(data["layer"])
-			
+
 		elif command == 'clearLayers':
 			self._layerNotifications.reset_layers()
-			
+
 		elif command == 'getLayers':
 			return flask.jsonify(dict(layers=self._layerNotifications.get_layers()))
 
