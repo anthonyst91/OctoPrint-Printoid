@@ -239,7 +239,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 	# SimpleApiPlugin mixin
 
 	def update_token(self, old_token, new_token, device_name, printer_id, printer_name):
-		self._logger.debug("Received tokens for %s." % device_name)
+		self._logger.debug("Received tokens for %s.", device_name)
 
 		existing_tokens = self._settings.get(["tokens"])
 
@@ -253,7 +253,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 			# Check if existing token has been updated
 			if token["fcmToken"] == old_token and token["printerID"] == printer_id:
 				if old_token != new_token:
-					self._logger.debug("Updating token for %s." % device_name)
+					self._logger.debug("Updating token for %s.", device_name)
 					# Token that exists needs to be updated with new token
 					token["fcmToken"] = new_token
 					token["date"] = datetime.datetime.now().strftime("%x %X")
@@ -272,7 +272,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 				break
 
 		if not found:
-			self._logger.debug("Adding token for %s." % device_name)
+			self._logger.debug("Adding token for %s.", device_name)
 			# Token was not found so we need to add it
 			existing_tokens.append(
 				{'fcmToken': new_token, 'deviceName': device_name,

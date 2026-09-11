@@ -40,8 +40,8 @@ class MMUAssistance(BaseNotification):
 						if mmu_interval > 0 and time.time() > self._snooze_end_time:
 							self.__send__mmu_notification(settings)
 						else:
-							self._logger.debug("MMU Notification skipped. Snoozing until {0}"
-											   .format(time.ctime(self._snooze_end_time)))
+							self._logger.debug("MMU Notification skipped. Snoozing until %s",
+											   time.ctime(self._snooze_end_time))
 
 				# Second line found, reset counter now
 					self._mmu_lines_skipped = None
@@ -54,7 +54,7 @@ class MMUAssistance(BaseNotification):
 	def snooze(self, minutes):
 		"""Snooze MMU events for the specified number of minutes"""
 		self._snooze_end_time = time.time() + (minutes * 60)
-		self._logger.debug("MMU Notification snoozing until {0}".format(time.ctime(self._snooze_end_time)))
+		self._logger.debug("MMU Notification snoozing until %s", time.ctime(self._snooze_end_time))
 
 	##~~ Private functions - MMU Notifications
 

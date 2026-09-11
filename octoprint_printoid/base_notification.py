@@ -18,7 +18,7 @@ class BaseNotification:
 		Transpose this image according the settings and returns it
 		:return:
 		"""
-		self._logger.debug("Snapshot URL: %s " % str(snapshot_url))
+		self._logger.debug("Snapshot URL: %s ", snapshot_url)
 		image = requests.get(snapshot_url, stream=True, timeout=(4, 10)).content
 
 		try:
@@ -35,7 +35,7 @@ class BaseNotification:
 				image = output.getvalue()
 				output.close()
 		except Exception as e:
-			self._logger.debug("Error reducing resolution of image: %s" % str(e))
+			self._logger.debug("Error reducing resolution of image: %s", e)
 
 		if hflip or vflip or rotate:
 			try:
@@ -54,7 +54,7 @@ class BaseNotification:
 				image = output.getvalue()
 				output.close()
 			except Exception as e:
-				self._logger.debug("Error rotating image: %s" % str(e))
+				self._logger.debug("Error rotating image: %s", e)
 
 		return image
 

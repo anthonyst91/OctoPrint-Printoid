@@ -48,8 +48,8 @@ class ToolsNotifications(BaseNotification):
 			if self._printer_was_printing_above_tool0_low and not printer.is_printing() and tool0_threshold_low \
 				and temps[k]['actual'] < tool0_threshold_low:
 				self._logger.debug(
-					"Print done and tool0 temp is now below threshold {0}. Actual {1}.".format(tool0_threshold_low,
-																							 temps[k]['actual']))
+					"Print done and tool0 temp is now below threshold %s. Actual %s.", tool0_threshold_low,
+					temps[k]['actual'])
 				self._printer_was_printing_above_tool0_low = False
 
 				self.__send__tool_notification(settings, "tool0-cold", tool0_threshold_low)

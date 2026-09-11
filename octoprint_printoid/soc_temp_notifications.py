@@ -37,7 +37,7 @@ class SocTempNotifications(BaseNotification):
 			return
 
 		temp = float(self.sbc.check_soc_temp())
-		self._logger.debug("SoC Temp: {0}".format(temp))
+		self._logger.debug("SoC Temp: %s", temp)
 
 		# Update recorded SoC temps
 		int_time = int(time.time())

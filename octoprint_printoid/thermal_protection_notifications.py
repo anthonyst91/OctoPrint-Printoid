@@ -76,12 +76,12 @@ class ThermalProtectionNotifications(BaseNotification):
 						part) > actual_temp:
 					if not self.__get_last_actual_temp(part):
 						self._logger.debug(
-							"Thermal runaway - Started to track {0}. Temp should go down. "
-							"Actual {1} and Target {2} ".format(part, actual_temp, target_temp))
+							"Thermal runaway - Started to track %s. Temp should go down. "
+							"Actual %s and Target %s ", part, actual_temp, target_temp)
 					else:
-						self._logger.debug("Thermal runaway - Tracking {0}. Temp going down. "
-										   "Actual {1} and Target {2} ".format(part, actual_temp,
-																			   target_temp))
+						self._logger.debug("Thermal runaway - Tracking %s. Temp going down. "
+										   "Actual %s and Target %s ", part, actual_temp,
+										   target_temp)
 					# Remember last temp so we can see if we are still cooling down
 					self.__save_last_temp(part, actual_temp)
 					return
@@ -90,17 +90,17 @@ class ThermalProtectionNotifications(BaseNotification):
 					# down or send the alert
 					if self.__get_last_actual_temp_time(part) + cooldown_threshold > now:
 						self._logger.debug(
-							"Thermal runaway - Tracking {0}. Temp NOT going down. Will wait more time. "
-							"Actual {1} and Target {2} ".format(part, actual_temp, target_temp))
+							"Thermal runaway - Tracking %s. Temp NOT going down. Will wait more time. "
+							"Actual %s and Target %s ", part, actual_temp, target_temp)
 						# We can still wait more time to let things cool down
 						return
 				elif self.__temp_increased_upto(actual_temp, self.__get_last_actual_temp(part),
 												9) and \
 						self.__get_last_actual_temp_time(part) + cooldown_threshold > now:
 					self._logger.debug(
-						"Thermal runaway - Tracking {0}. Temp went UP instead of DOWN. Will wait "
-						"more time. Actual {1} and Target {2} ".format(part, actual_temp,
-																	   target_temp))
+						"Thermal runaway - Tracking %s. Temp went UP instead of DOWN. Will wait "
+						"more time. Actual %s and Target %s ", part, actual_temp,
+						target_temp)
 					# We can still wait more time to let things cool down
 					return
 
@@ -117,8 +117,8 @@ class ThermalProtectionNotifications(BaseNotification):
 				if actual_temp + below_target_threshold < target_temp:
 					if not self.__get_last_actual_temp(part):
 						self._logger.debug(
-							"Thermal runaway - Started to track {0}. Temp should go up. "
-							"Actual {1} and Target {2} ".format(part, actual_temp, target_temp))
+							"Thermal runaway - Started to track %s. Temp should go up. "
+							"Actual %s and Target %s ", part, actual_temp, target_temp)
 						# Remember last temp so we can see if we temps are going up or not
 						self.__save_last_temp(part, actual_temp)
 						return
@@ -129,7 +129,7 @@ class ThermalProtectionNotifications(BaseNotification):
 						# Added 1C in case temp goes down to room temp and has minor fluctuations
 						self._logger.debug(
 							"Thermal runaway - Ignore checking since heater timed out waiting for user. "
-							"Actual {1} and Target {2} ".format(part, actual_temp, target_temp))
+							"Actual %s and Target %s ", actual_temp, target_temp)
 						# Remember last temp so we can see if we temps are going up or not
 						self.__save_last_temp(part, actual_temp)
 						return
@@ -140,8 +140,8 @@ class ThermalProtectionNotifications(BaseNotification):
 												   2)) and \
 							self.__get_last_actual_temp_time(part) + warmup_threshold > now:
 						self._logger.debug(
-							"Thermal runaway - Tracking {0}. Temp NOT going up. Will wait more time. "
-							"Actual {1} and Target {2} ".format(part, actual_temp, target_temp))
+							"Thermal runaway - Tracking %s. Temp NOT going up. Will wait more time. "
+							"Actual %s and Target %s ", part, actual_temp, target_temp)
 						# We can still wait more time to let things warm up
 						return
 					# Check if temp did not increase since last temp check. Task runs every 5 seconds
@@ -152,9 +152,9 @@ class ThermalProtectionNotifications(BaseNotification):
 														target_temp,
 														thermal_threshold_minutes_frequency)
 					else:
-						self._logger.debug("Thermal runaway - Tracking {0}. Temp going up. "
-										   "Actual {1} and Target {2} ".format(part, actual_temp,
-																			   target_temp))
+						self._logger.debug("Thermal runaway - Tracking %s. Temp going up. "
+										   "Actual %s and Target %s ", part, actual_temp,
+										   target_temp)
 						# Clear up flag that tracks if heater timed out. Marlin does not print a
 						# unique code to know when user pressed button to heat nozzle after
 						# printer paused for user and heater timed out. So if we see temp go up
@@ -165,9 +165,9 @@ class ThermalProtectionNotifications(BaseNotification):
 						self.__save_last_temp(part, actual_temp)
 				else:
 					# Temp is not above target range and is not below target range. IOW, it is in an ok range
-					self._logger.debug("Thermal runaway - Temp of {0} is within range. "
-									   "Actual {1} and Target {2} ".format(part, actual_temp,
-																		   target_temp))
+					self._logger.debug("Thermal runaway - Temp of %s is within range. "
+									   "Actual %s and Target %s ", part, actual_temp,
+									   target_temp)
 					self.__clear_last_actual_temp(part)
 		else:
 			# No target temp is defined so clean up any tracking info
@@ -180,8 +180,8 @@ class ThermalProtectionNotifications(BaseNotification):
 		should_alert = not last_time or now > last_time + (thermal_threshold_minutes_frequency * 60)
 		if should_alert:
 			self._logger.warning(
-				"Possible thermal runaway detected for {0}. Actual {1} and Target {2} ".
-					format(part, actual_temp, target_temp))
+				"Possible thermal runaway detected for %s. Actual %s and Target %s ",
+				part, actual_temp, target_temp)
 			self.__send__thermal_notification(settings, "thermal-runaway")
 			self._last_thermal_runaway_notification_time = now
 			self.__clear_last_actual_temp(part)

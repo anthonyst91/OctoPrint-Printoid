@@ -51,8 +51,8 @@ class PausedForUser(BaseNotification):
 				if time.time() > self._snooze_end_time:
 					self.__send_notification(settings)
 				else:
-					self._logger.debug("PausedForUser Notification skipped. Snoozing until {0}"
-									   .format(time.ctime(self._snooze_end_time)))
+					self._logger.debug("PausedForUser Notification skipped. Snoozing until %s",
+									   time.ctime(self._snooze_end_time))
 
 		# Always return what we parsed
 		return line
@@ -60,7 +60,7 @@ class PausedForUser(BaseNotification):
 	def snooze(self, minutes):
 		"""Snooze Pause For User events for the specified number of minutes"""
 		self._snooze_end_time = time.time() + (minutes * 60)
-		self._logger.debug("PausedForUser Notification snoozing until {0}".format(time.ctime(self._snooze_end_time)))
+		self._logger.debug("PausedForUser Notification snoozing until %s", time.ctime(self._snooze_end_time))
 
 	# Private functions
 

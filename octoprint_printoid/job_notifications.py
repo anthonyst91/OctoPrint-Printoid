@@ -268,8 +268,8 @@ class JobNotifications(BaseNotification):
 
 			if current_printer_state_id == "ERROR":
 				self._logger.debug(
-					"Sending notification for error message: %s (%s)" % (
-						current_printer_state, printer_name))
+					"Sending notification for error message: %s (%s)",
+					current_printer_state, printer_name)
 				last_result = self.send__print_status_notification(settings, False, "printer-error",
 																   current_printer_state)
 

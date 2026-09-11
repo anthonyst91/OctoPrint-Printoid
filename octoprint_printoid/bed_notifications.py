@@ -58,8 +58,8 @@ class BedNotifications(BaseNotification):
 			if self._printer_was_printing_above_bed_low and not printer.is_printing() and threshold_low and temps[k][
 				'actual'] < threshold_low:
 				self._logger.debug(
-					"Print done and bed temp is now below threshold {0}. Actual {1}.".format(threshold_low,
-																							 temps[k]['actual']))
+					"Print done and bed temp is now below threshold %s. Actual %s.", threshold_low,
+					temps[k]['actual'])
 				self._printer_was_printing_above_bed_low = False
 
 				self.__send__bed_notification(settings, "bed-cool", threshold_low, None)
@@ -82,7 +82,7 @@ class BedNotifications(BaseNotification):
 					warmed_time_seconds = time.time() - self._printer_not_printing_reached_target_temp_start_time
 					warmed_time_minutes = warmed_time_seconds / 60
 					if warmed_time_minutes > target_temp_minutes_hold:
-						self._logger.debug("Bed reached target temp for {0} minutes".format(warmed_time_minutes))
+						self._logger.debug("Bed reached target temp for %s minutes", warmed_time_minutes)
 						self._printer_not_printing_reached_target_temp_start_time = None
 
 						self.__send__bed_notification(settings, "bed-warn", temps[k]['target'])

@@ -83,8 +83,8 @@ class SBC(object):
             else:
                 p = p.stdout.text
 
-            self._logger.debug("response from sarge: %s" % p)
-            self._logger.debug("used pattern: %r" % self.parse_pattern)
+            self._logger.debug("response from sarge: %s", p)
+            self._logger.debug("used pattern: %r", self.parse_pattern)
             match = re.search(self.parse_pattern, p)
             temp = 0
             if not match:
@@ -92,7 +92,7 @@ class SBC(object):
                 self.is_supported = False
             else:
                 temp = self.parse_temperature(match)
-                self._logger.debug("match: %s" % str(temp))
+                self._logger.debug("match: %s", temp)
 
             return temp
 

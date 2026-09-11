@@ -11,8 +11,8 @@ class Alerts:
 
 	def send_alert_code(self, fcm_token, url, printer_id, printer_name, event_code, image=None,
 						event_param=None):
-		self._logger.info("//// Send alert to Printoid: '%s' with value %s (%s)" % (
-			event_code, event_param, printer_name))
+		self._logger.info("//// Send alert to Printoid: '%s' with value %s (%s)",
+			event_code, event_param, printer_name)
 
 		headers = {
 			"Content-type": "application/json"
@@ -37,13 +37,13 @@ class Alerts:
 			r = requests.post(url, headers=headers, json=data)
 
 			if r.status_code >= 400:
-				self._logger.info("Notification Response: %s" % str(r.content))
+				self._logger.info("Notification Response: %s", r.content)
 
 			else:
-				self._logger.debug("Notification Response code: %d" % r.status_code)
+				self._logger.debug("Notification Response code: %d", r.status_code)
 
 			return r.status_code
 
 		except Exception as e:
-			self._logger.warn("Could not send message: %s" % str(e))
+			self._logger.warning("Could not send message: %s", e)
 			return -500
