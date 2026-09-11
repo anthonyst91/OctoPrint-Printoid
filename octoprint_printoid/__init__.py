@@ -309,6 +309,9 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 									   "chamberShouldIncTemp", "delayBetweenNotif"],
 					getSoCTemps=[])
 
+	def is_api_protected(self):
+		return True
+
 	def on_api_command(self, command, data):
 		# Use this permission (as good as any other) to see if user can use this plugin and read status
 		if not Permissions.CONNECTION.can():
