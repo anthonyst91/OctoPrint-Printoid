@@ -447,6 +447,9 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 			dict(type="settings", name="Printoid Notifications", custom_bindings=True)
 		]
 
+	def is_template_autoescaped(self):
+		return True
+
 	# Softwareupdate hook
 
 	def get_update_information(self):
