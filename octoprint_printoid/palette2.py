@@ -13,7 +13,7 @@ class Palette2Notifications(BaseNotification):
 			p2_printing_error_codes = settings.get(["palette2_printing_error_codes"])
 			error_code = data["data"]
 			if error_code in p2_printing_error_codes:
-				self._logger.info("*** P2/P encountered error {} while printing ***".format(error_code))
+				self._logger.info("*** P2/P encountered error %s while printing ***", error_code)
 				self.__send_palette_notification(settings, "palette2-error-while-printing", error_code)
 
 	# Private functions - Notifications

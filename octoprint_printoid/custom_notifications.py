@@ -38,7 +38,6 @@ class CustomNotifications(BaseNotification):
 		# Android app can properly render local notification with
 		# proper printer name
 		used_tokens = []
-		last_result = None
 		for token in tokens:
 			fcm_token = token["fcmToken"]
 

@@ -239,7 +239,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 	# SimpleApiPlugin mixin
 
 	def update_token(self, old_token, new_token, device_name, printer_id, printer_name):
-		self._logger.debug("Received tokens for %s." % device_name)
+		self._logger.debug("Received tokens for %s.", device_name)
 
 		existing_tokens = self._settings.get(["tokens"])
 
@@ -253,7 +253,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 			# Check if existing token has been updated
 			if token["fcmToken"] == old_token and token["printerID"] == printer_id:
 				if old_token != new_token:
-					self._logger.debug("Updating token for %s." % device_name)
+					self._logger.debug("Updating token for %s.", device_name)
 					# Token that exists needs to be updated with new token
 					token["fcmToken"] = new_token
 					token["date"] = datetime.datetime.now().strftime("%x %X")
@@ -272,7 +272,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 				break
 
 		if not found:
-			self._logger.debug("Adding token for %s." % device_name)
+			self._logger.debug("Adding token for %s.", device_name)
 			# Token was not found so we need to add it
 			existing_tokens.append(
 				{'fcmToken': new_token, 'deviceName': device_name,
@@ -309,6 +309,9 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 									   "chamberShouldIncTemp", "delayBetweenNotif"],
 					getSoCTemps=[])
 
+	def is_api_protected(self):
+		return True
+
 	def on_api_command(self, command, data):
 		# Use this permission (as good as any other) to see if user can use this plugin and read status
 		if not Permissions.CONNECTION.can():
@@ -330,7 +333,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 
 		elif command == "progressMode":
 			modeChanged = self._job_notifications.set_progress_mode(self._settings, data["mode"])
-			if modeChanged == True:
+			if modeChanged:
 				eventManager().fire(Events.SETTINGS_UPDATED)
 			else:
 				return flask.make_response("changing progress mode failed: unknown mode", 400)
@@ -373,7 +376,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 			headTempChanged = self._tool_notifications.set_temperature_threshold(self._settings,
 																				 data[
 																					 "temperature"])
-			if headTempChanged == True:
+			if headTempChanged:
 				eventManager().fire(Events.SETTINGS_UPDATED)
 			else:
 				return flask.make_response(
@@ -382,7 +385,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 		elif command == 'bedTemperature':
 			bedTempChanged = self._bed_notifications.set_temperature_threshold(self._settings,
 																			   data["temperature"])
-			if bedTempChanged == True:
+			if bedTempChanged:
 				eventManager().fire(Events.SETTINGS_UPDATED)
 			else:
 				return flask.make_response(
@@ -391,7 +394,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 		elif command == 'bedWarmDuration':
 			bedTimeChanged = self._bed_notifications.set_temperature_duration(self._settings,
 																			  data["minutes"])
-			if bedTimeChanged == True:
+			if bedTimeChanged:
 				eventManager().fire(Events.SETTINGS_UPDATED)
 			else:
 				return flask.make_response(
@@ -400,7 +403,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 		elif command == 'printerPausedDuration':
 			printerPausedDurationChanged = self._paused_for_user.set_printer_pause_duration(
 				self._settings, data["minutes"])
-			if printerPausedDurationChanged == True:
+			if printerPausedDurationChanged:
 				eventManager().fire(Events.SETTINGS_UPDATED)
 			else:
 				return flask.make_response("changing printer paused duration failed: wrong value",
@@ -409,7 +412,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 		elif command == 'socTemperatureThreshold':
 			socTempThresholdChanged = self._soc_temp_notifications.set_soc_temperature_threshold(
 				self._settings, data["temperature"])
-			if socTempThresholdChanged == True:
+			if socTempThresholdChanged:
 				eventManager().fire(Events.SETTINGS_UPDATED)
 			else:
 				return flask.make_response("changing SoC temperature threshold failed: wrong value",
@@ -423,7 +426,7 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 				data["hotendShouldIncTemp"],
 				data["chamberShouldIncTemp"],
 				data["delayBetweenNotif"])
-			if thermalProtectionChanged == True:
+			if thermalProtectionChanged:
 				eventManager().fire(Events.SETTINGS_UPDATED)
 			else:
 				return flask.make_response("changing thermal protection failed: wrong value", 400)
@@ -446,6 +449,9 @@ class PrintoidPlugin(octoprint.plugin.SettingsPlugin,
 		return [
 			dict(type="settings", name="Printoid Notifications", custom_bindings=True)
 		]
+
+	def is_template_autoescaped(self):
+		return True
 
 	# Softwareupdate hook
 

@@ -26,9 +26,9 @@ class IFTTTAlerts:
 			response = requests.post(url, json=payload)
 
 			if response.status_code == 200:
-				self._logger.debug("IFTTT event (%s) fired!" % ifttt_event)
+				self._logger.debug("IFTTT event (%s) fired!", ifttt_event)
 			else:
 				self._logger.debug(
-					"Error firing IFTTT event (%s). Response: %s" % (ifttt_event, str(response.status_code)))
+					"Error firing IFTTT event (%s). Response: %s", ifttt_event, response.status_code)
 		except Exception as e:
-			self._logger.warn("Could not send IFTTT event: %s" % str(e))
+			self._logger.warning("Could not send IFTTT event: %s", e)
